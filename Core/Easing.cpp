@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Easing.h"
 
 using namespace Effects;
