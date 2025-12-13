@@ -134,13 +134,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\Slider.cpp" />
+    <ClCompile Include="Core\App.cpp" />
     <ClCompile Include="Core\Easing.cpp" />
+    <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System\Tweener.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\Slider.h" />
     <ClInclude Include="Consts.h" />
+    <ClInclude Include="Core\App.h" />
     <ClInclude Include="Core\Easing.h" />
+    <ClInclude Include="Core\Object.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="System\Tweener.h" />
   </ItemGroup>

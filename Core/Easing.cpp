@@ -1,6 +1,6 @@
 #include "Easing.h"
 
-using namespace Effects;
+using namespace Core::Effects;
 
 float Easing::linear(float in_t)
 {
