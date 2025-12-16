@@ -13,6 +13,7 @@ namespace Core
 		static Application* m_instance;
 
 		virtual void draw();
+		virtual void init();
 
 		virtual void registerObject(IObject* in_obj);
 		virtual void unregisterObject(IObject* in_obj);

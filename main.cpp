@@ -12,18 +12,13 @@ int main()
 
 	SetTargetFPS(120);
 	Application* app = new Application();
-
-	Slider* slider = new Slider();
-	slider->init(0.f);
-	slider->setX(CONSTS::SCREEN_WIDTH * 0.5f);
-	slider->setY(CONSTS::SCREEN_HEIGHT * 0.5f);
+	app->init();
 
 	while (!WindowShouldClose())
 	{
 		BeginDrawing();
 		ClearBackground(LIGHTGRAY);
 		app->draw();
-		//DrawText("Empty window", int(CONSTS::SCREEN_WIDTH * 0.5f), int(CONSTS::SCREEN_HEIGHT * 0.5f), 20, LIGHTGRAY);
 		EndDrawing();
 	}
 

@@ -5,7 +5,6 @@ using namespace Core;
 
 IObject::IObject()
 {
-	Application::m_instance->registerObject(this);
 	clearParams();
 }
 IObject::~IObject()

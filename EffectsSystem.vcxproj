@@ -108,7 +108,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>Core;raylib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Core;raylib;$(SolutionDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,6 +139,7 @@
     <ClCompile Include="Core\Easing.cpp" />
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="System\Canvas.cpp" />
     <ClCompile Include="System\Tweener.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="Core\Easing.h" />
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="System\Canvas.h" />
     <ClInclude Include="System\Tweener.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

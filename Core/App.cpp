@@ -1,5 +1,7 @@
+#include "stdafx.h"
 #include "App.h"
 #include "Object.h"
+#include "../System/Canvas.h"
 
 using namespace Core;
 
@@ -48,6 +50,14 @@ void Application::unregisterObject(IObject* in_obj)
 			return;
 		}
 	}
+}
+void Application::init()
+{
+	Canvas* canvas = new Canvas();
+	registerObject(canvas);
+	canvas->setWidth(CONSTS::SCREEN_WIDTH * 0.7f);
+	canvas->setHeight((float)CONSTS::SCREEN_HEIGHT);
+	canvas->init();
 }
 // FUNCS
 void Application::clearParams()
