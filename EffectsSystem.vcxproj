@@ -140,6 +140,7 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System\Canvas.cpp" />
+    <ClCompile Include="System\Sidebar.cpp" />
     <ClCompile Include="System\Tweener.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="System\Canvas.h" />
+    <ClInclude Include="System\Sidebar.h" />
     <ClInclude Include="System\Tweener.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

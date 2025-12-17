@@ -9,7 +9,7 @@ using namespace Core;
 int main()
 {
 	InitWindow(CONSTS::SCREEN_WIDTH, CONSTS::SCREEN_HEIGHT, "Effects System");
-
+	
 	SetTargetFPS(120);
 	Application* app = new Application();
 	app->init();
@@ -21,6 +21,8 @@ int main()
 		app->draw();
 		EndDrawing();
 	}
+
+	delete app;
 
 	CloseWindow();
 	return 0;

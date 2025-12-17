@@ -16,6 +16,8 @@ namespace Core
 		virtual float getY();
 		virtual void setY(float in_value);
 
+		virtual Vector2 getPos();
+
 		virtual float getWidth();
 		virtual void setWidth(float in_value);
 		virtual float getHeight();
@@ -48,9 +50,11 @@ namespace Core
 
 		virtual void draw();
 		virtual void setBorderSize(float in_value);
+		virtual void setRadius(float in_value);
 
 	protected:
 		float m_border_size;
+		float m_radius;
 
 	private:
 		void clearParams();

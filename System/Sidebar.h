@@ -1,26 +1,28 @@
 #pragma once
 #include "raylib.h"
 #include "../Core/Object.h"
-#include <vector>
 
 namespace Core
 {
-	class Canvas : public IObject
+	class Slider;
+	class Sidebar : public IObject
 	{
 	public:
-		Canvas();
-		virtual ~Canvas();
+		Sidebar();
+		virtual ~Sidebar();
 
 		virtual void draw();
 		virtual void init();
 
 	protected:
-		BasicObject* m_ctrl;
+		float m_margin;
 		TextObject* m_title;
-		Camera2D m_camera;
-		std::vector<TextObject> m_legends;
+		Slider* m_slider;
 
-		void drawGrid();
+		virtual Vector2 getSafePos();
+		virtual int getSafeX();
+		virtual int getSafeY();
+
 	private:
 		void clearParams();
 	};

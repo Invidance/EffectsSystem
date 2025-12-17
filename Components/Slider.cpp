@@ -17,17 +17,22 @@ float Slider::getValue()
 {
 	return m_value;
 }
+TextObject* Slider::getTextObject()
+{
+	return m_text;
+}
+void Slider::setMultiplier(float in_value)
+{
+	m_multiplier = in_value;
+}
 void Slider::init(float in_value)
 {
 	m_value = in_value;
 
-	setWidth(200.f);
-	setHeight(16.f);
-	setColor(LIME);
 	m_knob = new BasicObject();
 	Application::m_instance->unregisterObject(m_knob);
 	m_knob->setWidth(12.f);
-	m_knob->setHeight(20.f);
+	m_knob->setHeight(getHeight() + 6.f);
 	m_knob->setColor(ORANGE);
 
 	m_text = new TextObject();
@@ -68,13 +73,14 @@ void Slider::draw()
 		m_text->setX(getX() + getWidth() * 0.5f);
 		m_text->setY(getY() - 20.f);
 
-		m_text->setText(std::to_string(m_value).c_str());
+		m_text->setText(std::to_string(m_value * m_multiplier).c_str());
 		m_text->draw();
 	}
 }
 // FUNCS
 void Slider::clearParams()
 {
+	m_multiplier = 1.f;
 	m_value = 0.f;
 	m_min_value = 0.f;
 	m_max_value = 1.f;

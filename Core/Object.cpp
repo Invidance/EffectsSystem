@@ -9,7 +9,6 @@ IObject::IObject()
 }
 IObject::~IObject()
 {
-	Application::m_instance->unregisterObject(this);
 	clearParams();
 }
 // VIRTUAL FUNCS
@@ -58,6 +57,10 @@ void IObject::setY(float in_value)
 {
 	m_y = in_value;
 }
+Vector2 IObject::getPos()
+{
+	return { getX(), getY() };
+}
 void IObject::destroy()
 {
 	delete this;
@@ -81,18 +84,32 @@ BasicObject::~BasicObject()
 // VIRTUAL FUNCS
 void BasicObject::draw()
 {
-	DrawRectangleRec(getRect(), getColor());
-	if (m_border_size > 0)
-		DrawRectangleLinesEx(getRect(), m_border_size, DARKGRAY);
+	if (m_radius > 0.001f)
+	{
+		DrawCircleV(getPos(), m_radius, getColor());
+		if (m_border_size > 0)
+			DrawCircleLinesV(getPos(), m_radius + m_border_size, DARKGRAY);
+	}
+	else
+	{
+		DrawRectangleRec(getRect(), getColor());
+		if (m_border_size > 0)
+			DrawRectangleLinesEx(getRect(), m_border_size, DARKGRAY);
+	}
 }
 void BasicObject::setBorderSize(float in_value)
 {
 	m_border_size = in_value;
 }
+void BasicObject::setRadius(float in_value)
+{
+	m_radius = in_value;
+}
 // FUNCS
 void BasicObject::clearParams()
 {
 	m_border_size = 0.f;
+	m_radius = 0.f;
 }
 
 // ============ TextObject ===========
@@ -125,7 +142,7 @@ void TextObject::draw()
 {
 	if (!m_text.empty())
 	{
-		DrawText(m_text.c_str(), (int)getX(), (int)getY(), m_font_size, getColor());
+		DrawTextEx(*Application::m_instance->getFont(), m_text.c_str(), getPos(), m_font_size, m_font_size / 10.f, getColor());
 	}
 }
 // FUNCS

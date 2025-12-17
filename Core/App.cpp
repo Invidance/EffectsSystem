@@ -2,12 +2,15 @@
 #include "App.h"
 #include "Object.h"
 #include "../System/Canvas.h"
+#include "../System/Sidebar.h"
 
 using namespace Core;
 
 Application* Application::m_instance = nullptr;
 Application::Application()
 {
+	UnloadFont(m_font);
+
 	m_instance = this;
 	clearParams();
 }
@@ -25,6 +28,10 @@ Application::~Application()
 	clearParams();
 }
 // VIRTUAL FUNCS
+Font* Application::getFont()
+{
+	return &m_font;
+}
 void Application::draw()
 {
 	for (size_t i = 0; i < m_objects.size(); i++)
@@ -53,11 +60,21 @@ void Application::unregisterObject(IObject* in_obj)
 }
 void Application::init()
 {
+	m_font = LoadFontEx("res/Roboto-Bold.ttf", 64, 0, 0);
+	SetTextureFilter(m_font.texture, TEXTURE_FILTER_BILINEAR);
+
 	Canvas* canvas = new Canvas();
 	registerObject(canvas);
 	canvas->setWidth(CONSTS::SCREEN_WIDTH * 0.7f);
 	canvas->setHeight((float)CONSTS::SCREEN_HEIGHT);
 	canvas->init();
+
+	Sidebar* sidebar = new Sidebar();
+	registerObject(sidebar);
+	sidebar->setX(CONSTS::SCREEN_WIDTH * 0.7f);
+	sidebar->setWidth(CONSTS::SCREEN_WIDTH * 0.3f);
+	sidebar->setHeight((float)CONSTS::SCREEN_HEIGHT);
+	sidebar->init();
 }
 // FUNCS
 void Application::clearParams()
