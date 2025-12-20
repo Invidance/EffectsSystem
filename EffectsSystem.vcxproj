@@ -134,6 +134,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Components\Dropdown.cpp" />
     <ClCompile Include="Components\Slider.cpp" />
     <ClCompile Include="Core\App.cpp" />
     <ClCompile Include="Core\Easing.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="System\Tweener.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\Dropdown.h" />
     <ClInclude Include="Components\Slider.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Core\App.h" />

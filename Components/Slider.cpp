@@ -10,6 +10,15 @@ Slider::Slider()
 }
 Slider::~Slider()
 {
+	if (m_knob != nullptr)
+		delete m_knob;
+
+	if (m_text != nullptr)
+		delete m_text;
+
+	if (m_desc != nullptr)
+		delete m_desc;
+
 	clearParams();
 }
 // VIRTUAL FUNCS
@@ -17,9 +26,18 @@ float Slider::getValue()
 {
 	return m_value;
 }
+float Slider::getMultiplier()
+{
+	return m_multiplier;
+}
 TextObject* Slider::getTextObject()
 {
 	return m_text;
+}
+void Slider::setDesc(const char* in_value)
+{
+	if (m_desc != nullptr)
+		m_desc->setText(in_value);
 }
 void Slider::setMultiplier(float in_value)
 {
@@ -30,15 +48,22 @@ void Slider::init(float in_value)
 	m_value = in_value;
 
 	m_knob = new BasicObject();
-	Application::m_instance->unregisterObject(m_knob);
 	m_knob->setWidth(12.f);
 	m_knob->setHeight(getHeight() + 6.f);
 	m_knob->setColor(ORANGE);
 
+	m_filled_back = new BasicObject();
+	m_filled_back->setWidth(getWidth());
+	m_filled_back->setHeight(getHeight());
+	m_filled_back->setColor(getColor());
+
 	m_text = new TextObject();
-	Application::m_instance->unregisterObject(m_text);
 	m_text->setX(getX() + getWidth() * 0.5f);
 	m_text->setY(getY() - 20.f);
+
+	m_desc = new TextObject();
+	m_desc->setX(getX());
+	m_desc->setY(getY() - 20.f);
 }
 void Slider::draw()
 {
@@ -58,7 +83,14 @@ void Slider::draw()
 		}
 	}
 
-	DrawRectangleRec(getRect(), getColor());
+	DrawRectangleRec(getRect(), DARKGRAY);
+	if (m_filled_back != nullptr)
+	{
+		m_filled_back->setX(getX());
+		m_filled_back->setY(getY());
+		m_filled_back->setWidth(getWidth() * getValue());
+		m_filled_back->draw();
+	}
 
 	if (m_knob != nullptr)
 	{
@@ -70,12 +102,12 @@ void Slider::draw()
 
 	if (m_text != nullptr)
 	{
-		m_text->setX(getX() + getWidth() * 0.5f);
-		m_text->setY(getY() - 20.f);
-
 		m_text->setText(std::to_string(m_value * m_multiplier).c_str());
 		m_text->draw();
 	}
+
+	if (m_desc != nullptr)
+		m_desc->draw();
 }
 // FUNCS
 void Slider::clearParams()
@@ -86,5 +118,7 @@ void Slider::clearParams()
 	m_max_value = 1.f;
 	m_knob = nullptr;
 	m_text = nullptr;
+	m_desc = nullptr;
+	m_filled_back = nullptr;
 }
 

@@ -58,6 +58,10 @@ void Application::unregisterObject(IObject* in_obj)
 		}
 	}
 }
+const std::vector<IObject*>& Application::getRegisteredObjects()
+{
+	return m_objects;
+}
 void Application::init()
 {
 	m_font = LoadFontEx("res/Roboto-Bold.ttf", 64, 0, 0);

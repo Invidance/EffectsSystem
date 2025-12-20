@@ -12,6 +12,8 @@ namespace Core
 		virtual float getValue();
 		virtual void init(float in_value);
 		virtual void setMultiplier(float in_value);
+		virtual float getMultiplier();
+		virtual void setDesc(const char* in_value);
 
 		virtual TextObject* getTextObject();
 
@@ -22,8 +24,10 @@ namespace Core
 		float m_value;
 		float m_min_value;
 		float m_max_value;
+		BasicObject* m_filled_back;
 		BasicObject* m_knob;
 		TextObject* m_text;
+		TextObject* m_desc;
 
 	private:
 		void clearParams();

@@ -19,6 +19,7 @@ namespace Core
 
 		virtual void registerObject(IObject* in_obj);
 		virtual void unregisterObject(IObject* in_obj);
+		virtual const std::vector<IObject*>& getRegisteredObjects();
 	protected:
 		Font m_font;
 		bool m_active;
