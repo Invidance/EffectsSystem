@@ -141,6 +141,7 @@
     <ClCompile Include="Core\Object.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="System\Canvas.cpp" />
+    <ClCompile Include="System\Particle.cpp" />
     <ClCompile Include="System\Sidebar.cpp" />
     <ClCompile Include="System\Tweener.cpp" />
   </ItemGroup>
@@ -153,6 +154,7 @@
     <ClInclude Include="Core\Object.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="System\Canvas.h" />
+    <ClInclude Include="System\Particle.h" />
     <ClInclude Include="System\Sidebar.h" />
     <ClInclude Include="System\Tweener.h" />
   </ItemGroup>

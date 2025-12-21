@@ -2,6 +2,7 @@
 #include "raylib.h"
 #include "Canvas.h"
 #include "Sidebar.h"
+#include "Particle.h"
 #include "../Core/App.h"
 
 using namespace Core;
@@ -46,6 +47,10 @@ void Canvas::init()
 	m_ctrl = new BasicObject();
 	m_ctrl->setRadius(15.f);
 	m_ctrl->setColor(MAGENTA);
+
+	m_particle_system = new ParticleSystem();
+	m_particle_system->m_create_range.x = getWidth() * 0.5f;
+	m_particle_system->start();
 }
 void Canvas::draw()
 {
@@ -114,6 +119,9 @@ void Canvas::draw()
 	if (m_ctrl != nullptr)
 		m_ctrl->draw();
 
+	if (m_particle_system != nullptr)
+		m_particle_system->draw();
+
 	EndMode2D();
 
 	DrawRectangleLinesEx(getRect(), 2, BLACK);
@@ -160,6 +168,7 @@ void Canvas::clearParams()
 	m_sidebar = nullptr;
 	m_title = nullptr;
 	m_ctrl = nullptr;
+	m_particle_system = nullptr;
 	m_is_pressed = false;
 	m_time = 0.f;
 	m_duration = 0.f;

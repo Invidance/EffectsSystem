@@ -7,6 +7,7 @@
 namespace Core
 {
 	class Sidebar;
+	class ParticleSystem;
 	class Canvas : public IObject
 	{
 	public:
@@ -36,6 +37,7 @@ namespace Core
 		Sidebar* m_sidebar;
 		BasicObject* m_ctrl;
 		TextObject* m_title;
+		ParticleSystem* m_particle_system;
 		Camera2D m_camera;
 		std::vector<TextObject> m_legends;
 
