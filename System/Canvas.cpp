@@ -49,7 +49,25 @@ void Canvas::init()
 	m_ctrl->setColor(MAGENTA);
 
 	m_particle_system = new ParticleSystem();
-	m_particle_system->m_create_range.x = getWidth() * 0.5f;
+	m_particle_system->m_create_range.x = -getWidth();
+	m_particle_system->m_create_range.width = getWidth() * 2.f;
+	m_particle_system->m_create_range.y = getHeight() * -0.5f;
+	m_particle_system->m_create_range.height = 0.f;
+	m_particle_system->m_spawn_rate = 0.1f;
+	m_particle_system->m_lifetime = 20.f;
+	m_particle_system->m_initial_force.x = 20.f;
+	m_particle_system->m_initial_force.y = 70.f;
+	m_particle_system->m_random_force_prc = 50.f;
+	m_particle_system->m_gravity.x = 0.f;
+	m_particle_system->m_gravity.y = 1.5f;
+	m_particle_system->m_vibration_dt = 7.f;
+	m_particle_system->m_vibration_speed = 25.f;
+	m_particle_system->m_start_emiter_count = 50;
+
+	m_particle_system->m_colors.push_back(WHITE); 
+	m_particle_system->m_colors.push_back(SKYBLUE);
+	m_particle_system->m_colors.push_back(LIGHTGRAY);
+
 	m_particle_system->start();
 }
 void Canvas::draw()

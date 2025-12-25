@@ -24,9 +24,9 @@ namespace Core
 		float m_time;
 		float m_lifetime;
 		Vector2 m_pos;
-		Vector2 m_from_pos;
-		Vector2 m_to_pos;
+		Vector2 m_velocity;
 		BasicObject* m_render_target;
+		ParticleSystem* m_ref_particle;
 
 	private:
 		void clearParams();
@@ -36,14 +36,17 @@ namespace Core
 	{
 	public:
 		bool m_is_started;
-		float m_delay_between_create_time;
-		float m_delay_between_create;
+		int m_start_emiter_count;
+		float m_timer;
+		float m_spawn_rate;
 		float m_lifetime;
-		float m_gravity;
-		float m_speed_min;
-		float m_speed_max;
-		int m_emiters_count;
-		Vector2 m_create_range;
+		float m_random_force_prc;
+		float m_vibration_dt;
+		float m_vibration_speed;
+		Vector2 m_gravity;
+		Vector2 m_initial_force;
+		Rectangle m_create_range;
+		std::vector<Color> m_colors;
 
 		ParticleSystem();
 		virtual ~ParticleSystem();
@@ -54,8 +57,9 @@ namespace Core
 
 	protected:
 		std::vector<Emmiter*> m_emiters;
+		std::vector<Emmiter*> m_emiters_pool;
 
-		virtual void createEmmiter();
+		virtual void createEmmiter(bool in_is_simulated = false);
 	private:
 		void clearParams();
 	};

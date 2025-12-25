@@ -16,18 +16,26 @@ Emmiter::~Emmiter()
 // VIRTUAL FUNCS
 void Emmiter::update(float dt)
 {
-	if (m_lifetime <= 0.001f)
+	if (m_lifetime <= 0.001f || m_ref_particle == nullptr)
+	{
+		finish();
 		return;
+	}
+
+	m_velocity.x += m_ref_particle->m_gravity.x * dt;
+	m_velocity.y += m_ref_particle->m_gravity.y * dt;
+
+	m_pos.x += m_velocity.x * dt;
+	m_pos.y += m_velocity.y * dt;
 
 	m_time += dt;
 
 	float t = m_time / m_lifetime;
-	Easing::interpolate(m_from_pos, m_to_pos, m_pos, t);
-	
+
 	if (m_render_target != nullptr)
 	{
-		m_render_target->setX(m_pos.x);
-		m_render_target->setY(m_pos.y);
+		m_render_target->setX(m_pos.x + cos(t * m_ref_particle->m_vibration_speed) * m_ref_particle->m_vibration_dt);
+		m_render_target->setY(m_pos.y + sin(t * m_ref_particle->m_vibration_speed) * m_ref_particle->m_vibration_dt);
 	}
 
 	if (t >= 1.f)
@@ -35,16 +43,18 @@ void Emmiter::update(float dt)
 }
 void Emmiter::draw()
 {
-	
+	if (m_render_target != nullptr)
+		m_render_target->draw();
+
 }
 void Emmiter::start()
 {
 	m_time = 0.f;
+	m_is_complete = false;
 	if (m_render_target == nullptr)
 		m_render_target = new BasicObject();
 
-	m_render_target->setX(m_from_pos.x);
-	m_render_target->setY(m_from_pos.y);
+	m_render_target->setRadius(3.f);
 }
 void Emmiter::finish()
 {
@@ -55,14 +65,11 @@ void Emmiter::clearParams()
 {
 	m_is_complete = false;
 	m_render_target = nullptr;
+	m_ref_particle = nullptr;
 	m_time = 0.f;
 	m_lifetime = 0.f;
 	m_pos.x = 0.f;
 	m_pos.y = 0.f;
-	m_from_pos.x = 0.f;
-	m_from_pos.y = 0.f;
-	m_to_pos.x = 0.f;
-	m_to_pos.y = 0.f;
 }
 
 // ============ ParticleSystem ===========
@@ -85,50 +92,75 @@ void ParticleSystem::draw()
 	for (; it != m_emiters.end(); ++it)
 	{
 		(*it)->update(dt);
-		(*it)->draw();
+		if ((*it)->m_is_complete)
+			m_emiters_pool.push_back((*it));
+		else
+			(*it)->draw();
 	}
 
-	if (m_delay_between_create_time > 0.f)
+	m_emiters.erase(std::remove_if(m_emiters.begin(), m_emiters.end(),
+		[](Emmiter* e) { return e->m_is_complete; }), m_emiters.end());
+
+	m_timer += dt;
+	if (m_timer > m_spawn_rate)
 	{
-		m_delay_between_create_time -= dt;
+		m_timer = 0.f;
 		createEmmiter();
 	}
 }
 void ParticleSystem::start()
 {
 	m_is_started = true;
-	createEmmiter();
+	for (int i = 0; i < m_start_emiter_count; i += 1)
+		createEmmiter(true);
 }
 void ParticleSystem::finish()
 {
 
 }
-void ParticleSystem::createEmmiter()
+void ParticleSystem::createEmmiter(bool in_is_simulated /* = false */)
 {
-	m_delay_between_create_time = m_delay_between_create;
-
-	if (m_emiters.size() <= m_emiters_count)
+	Emmiter* emiter = nullptr;
+	if (m_emiters_pool.size() > 0)
 	{
-		Emmiter* emiter = new Emmiter();
-		emiter->m_lifetime = m_lifetime;
-		emiter->m_from_pos.x = m_create_range.x;
-		emiter->m_from_pos.y = m_create_range.y;
-		emiter->m_to_pos.x = m_create_range.x;
-		emiter->m_to_pos.y = CONSTS::SCREEN_HEIGHT;
-		m_emiters.push_back(emiter);
+		emiter = m_emiters_pool.front();
+		m_emiters_pool.erase(m_emiters_pool.begin());
 	}
+	else
+		emiter = new Emmiter();
+
+	emiter->m_lifetime = m_lifetime;
+	emiter->m_velocity = m_initial_force + m_initial_force * (GetRandomValue(-m_random_force_prc, m_random_force_prc) / 100.f);
+	emiter->m_ref_particle = this;
+	emiter->m_pos.x = (float)GetRandomValue((int)m_create_range.x, (int)(m_create_range.x + m_create_range.width));
+	emiter->m_pos.y = (float)GetRandomValue((int)m_create_range.y, (int)(m_create_range.y + m_create_range.height));
+	emiter->start();
+	if (m_colors.size() > 0 && emiter->m_render_target != nullptr)
+	{
+		Color c = m_colors[GetRandomValue(0, m_colors.size() - 1)];
+		emiter->m_render_target->setColor(c);
+	}
+
+	if (in_is_simulated)
+	{
+		float t = GetRandomValue(0.f, emiter->m_lifetime);
+		emiter->update(t);
+	}
+
+	m_emiters.push_back(emiter);
 }
 // FUNCS
 void ParticleSystem::clearParams()
 {
+	m_timer = 0.f;
 	m_is_started = false;
-	m_delay_between_create_time = 0.f;
-	m_delay_between_create = 1.f;
-	m_lifetime = 5.f;
-	m_gravity = 0.f;
-	m_speed_min = 0.f;
-	m_speed_max = 0.f;
+	m_spawn_rate = 1.f;
+	m_lifetime = 3.f;
 	m_create_range.x = 0.f;
 	m_create_range.y = 0.f;
-	m_emiters_count = 20;
+	m_random_force_prc = 0.f;
+	m_vibration_dt = 0.f;
+	m_vibration_speed = 1.f;
+	m_gravity.y = 9.8f;
+	m_start_emiter_count = 0;
 }

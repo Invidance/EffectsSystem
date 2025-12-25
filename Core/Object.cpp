@@ -70,6 +70,8 @@ void IObject::clearParams()
 {
 	m_x = 0.f;
 	m_y = 0.f;
+	m_width = 0.f;
+	m_height = 0.f;
 }
 
 // ============ BaseObject ===========
