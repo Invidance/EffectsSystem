@@ -25,6 +25,12 @@ Canvas::~Canvas()
 	if (m_ctrl != nullptr)
 		delete m_ctrl;
 
+	if (m_particle_system != nullptr)
+	{
+		UnloadTexture(m_particle_system->m_texture);
+		delete m_particle_system;
+	}
+
 	clearParams();
 }
 // VIRTUAL FUNCS
@@ -44,41 +50,56 @@ void Canvas::init()
 	m_title->setColor(RAYWHITE);
 	m_title->setFontSize(20);
 
-	m_ctrl = new BasicObject();
+	/*m_ctrl = new BasicObject();
 	m_ctrl->setRadius(15.f);
-	m_ctrl->setColor(MAGENTA);
+	m_ctrl->setColor(MAGENTA);*/
 
 	m_particle_system = new ParticleSystem();
 	m_particle_system->m_create_range.x = -getWidth();
 	m_particle_system->m_create_range.width = getWidth() * 2.f;
 	m_particle_system->m_create_range.y = getHeight() * -0.5f;
 	m_particle_system->m_create_range.height = 0.f;
-	m_particle_system->m_spawn_rate = 0.1f;
+	m_particle_system->m_spawn_rate = 0.03f;
 	m_particle_system->m_lifetime = 20.f;
-	m_particle_system->m_initial_force.x = 20.f;
-	m_particle_system->m_initial_force.y = 70.f;
+	m_particle_system->m_initial_force.x = 40.f;
+	m_particle_system->m_initial_force.y = 110.f;
 	m_particle_system->m_random_force_prc = 50.f;
 	m_particle_system->m_gravity.x = 0.f;
 	m_particle_system->m_gravity.y = 1.5f;
-	m_particle_system->m_vibration_dt = 7.f;
-	m_particle_system->m_vibration_speed = 25.f;
-	m_particle_system->m_start_emiter_count = 50;
+	m_particle_system->m_vibration_dt = 10.f;
+	m_particle_system->m_vibration_speed = 35.f;
+	m_particle_system->m_start_emiter_count = 150;
+	m_particle_system->m_texture = LoadTexture("res/images/snowflake.png");
 
-	m_particle_system->m_colors.push_back(WHITE); 
-	m_particle_system->m_colors.push_back(SKYBLUE);
-	m_particle_system->m_colors.push_back(LIGHTGRAY);
-
+	m_particle_system->m_colors.push_back({ 109, 210, 247, 255 });
+	m_particle_system->m_colors.push_back({ 147, 222, 250, 255 });
+	m_particle_system->m_colors.push_back({ 157, 195, 245, 255 });
+	m_particle_system->m_colors.push_back({ 115, 173, 250, 255 });
+	m_particle_system->m_colors.push_back({ 233, 199, 255, 255 });
+	
 	m_particle_system->start();
 }
 void Canvas::draw()
 {
+	if (m_sidebar == nullptr)
+	{
+		const std::vector<IObject*>& objs = Application::m_instance->getRegisteredObjects();
+		for (auto obj : objs)
+		{
+			m_sidebar = dynamic_cast<Sidebar*>(obj);
+			if (m_sidebar != nullptr)
+				break;
+		}
+	}
+
 	BeginScissorMode((int)getX(), (int)getY(), (int)getWidth(), (int)getHeight());
 
-	ClearBackground(DARKGRAY);
+	ClearBackground({30,30,30,255});
 
 	BeginMode2D(m_camera);
 
-	drawGrid();
+	//if(m_is_draw_grid)
+	//	drawGrid();
 
 	if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
 	{
@@ -91,27 +112,7 @@ void Canvas::draw()
 				Vector2 normalized = { mousePos.x - getX() - getWidth() / 2.f, mousePos.y - getY() - getHeight() / 2.f };
 				m_next_data.m_pos = normalized;
 
-				if (m_sidebar == nullptr)
-				{
-					const std::vector<IObject*>& objs = Application::m_instance->getRegisteredObjects();
-					for (auto obj : objs)
-					{
-						m_sidebar = dynamic_cast<Sidebar*>(obj);
-						if (m_sidebar != nullptr)
-							break;
-					}
-				}
-
-				if (m_sidebar != nullptr)
-				{
-					m_sidebar->getParameter(CONSTS::PARAMETER_DURATION, m_duration);
-					double v = 0;
-					m_sidebar->getParameter(CONSTS::PARAMETER_TWEEN_FUNC, v);
-					m_func = (Easing::EASING_FUNC)(int)v;
-
-					m_sidebar->getParameter(CONSTS::PARAMETER_TWEEN_TYPE, v);
-					m_type = (Easing::EASING_TYPE)(int)v;
-				}
+				refreshParameters();
 
 				if (m_ctrl != nullptr)
 				{
@@ -168,6 +169,9 @@ void Canvas::drawGrid()
 }
 void Canvas::update()
 {
+	if (m_ctrl == nullptr)
+		return;
+
 	if (m_time >= m_duration)
 		return;
 
@@ -180,6 +184,25 @@ void Canvas::update()
 	m_ctrl->setX(pos.x);
 	m_ctrl->setY(pos.y);
 }
+void Canvas::refreshParameters()
+{
+	if (m_sidebar != nullptr)
+	{
+		m_sidebar->getParameter(CONSTS::PARAMETER_DURATION, m_duration);
+		double v = 0;
+		m_sidebar->getParameter(CONSTS::PARAMETER_TWEEN_FUNC, v);
+		m_func = (Easing::EASING_FUNC)(int)v;
+
+		m_sidebar->getParameter(CONSTS::PARAMETER_TWEEN_TYPE, v);
+		m_type = (Easing::EASING_TYPE)(int)v;
+
+		m_sidebar->getParameter(CONSTS::PARAMETER_SHOW_GRID, v);
+		m_is_draw_grid = (bool)(int)v;
+
+		m_sidebar->getParameter(CONSTS::PARAMETER_TIMESCALE, v);
+		m_particle_system->m_time_scale = (float)v;
+	}
+}
 // FUNCS
 void Canvas::clearParams()
 {
@@ -188,6 +211,7 @@ void Canvas::clearParams()
 	m_ctrl = nullptr;
 	m_particle_system = nullptr;
 	m_is_pressed = false;
+	m_is_draw_grid = false;
 	m_time = 0.f;
 	m_duration = 0.f;
 	m_func = Easing::FUNC_IN;

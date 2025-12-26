@@ -16,6 +16,7 @@ namespace Core
 
 		virtual void draw();
 		virtual void init();
+		virtual void refreshParameters();
 
 	protected:
 		struct FlyData
@@ -31,6 +32,7 @@ namespace Core
 		Easing::EASING_FUNC m_func;
 		Easing::EASING_TYPE m_type;
 		bool m_is_pressed;
+		bool m_is_draw_grid;
 		FlyData m_prev_data;
 		FlyData m_next_data;
 

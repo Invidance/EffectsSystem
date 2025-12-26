@@ -3,6 +3,7 @@
 
 namespace Core
 {
+	class ImageMask;
 	class BasicObject;
 	class ParticleSystem;
 
@@ -21,9 +22,11 @@ namespace Core
 
 	protected:
 		bool m_is_complete;
+		bool m_is_stacked;
 		float m_time;
 		float m_lifetime;
 		Vector2 m_pos;
+		Vector2 m_prev_pos;
 		Vector2 m_velocity;
 		BasicObject* m_render_target;
 		ParticleSystem* m_ref_particle;
@@ -43,9 +46,12 @@ namespace Core
 		float m_random_force_prc;
 		float m_vibration_dt;
 		float m_vibration_speed;
+		float m_time_scale;
 		Vector2 m_gravity;
 		Vector2 m_initial_force;
+		Texture2D m_texture;
 		Rectangle m_create_range;
+		ImageMask* m_image_mask;
 		std::vector<Color> m_colors;
 
 		ParticleSystem();

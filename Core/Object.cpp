@@ -86,6 +86,13 @@ BasicObject::~BasicObject()
 // VIRTUAL FUNCS
 void BasicObject::draw()
 {
+	if (m_texture != nullptr)
+	{
+		Rectangle source = { 0.0f, 0.0f, (float)m_texture->width, (float)m_texture->height };
+
+		DrawTexturePro(*m_texture, source, getRect(), { getWidth() * 0.5f, getHeight() * 0.5f }, 0.f, getColor());
+	}
+	else
 	if (m_radius > 0.001f)
 	{
 		DrawCircleV(getPos(), m_radius, getColor());
@@ -107,11 +114,16 @@ void BasicObject::setRadius(float in_value)
 {
 	m_radius = in_value;
 }
+void BasicObject::setTexture(Texture2D* in_texture)
+{
+	m_texture = in_texture;
+}
 // FUNCS
 void BasicObject::clearParams()
 {
 	m_border_size = 0.f;
 	m_radius = 0.f;
+	m_texture = nullptr;
 }
 
 // ============ TextObject ===========

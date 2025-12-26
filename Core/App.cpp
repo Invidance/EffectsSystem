@@ -79,7 +79,9 @@ void Application::init()
 	sidebar->setWidth(CONSTS::SCREEN_WIDTH * 0.3f);
 	sidebar->setHeight((float)CONSTS::SCREEN_HEIGHT);
 	sidebar->init();
+	sidebar->registerCallback(canvas);
 }
+
 // FUNCS
 void Application::clearParams()
 {

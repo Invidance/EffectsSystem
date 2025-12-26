@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "Sidebar.h"
+#include "Canvas.h"
 #include "../Core/App.h"
 #include "../Components/Slider.h"
 #include "../Components/Dropdown.h"
+#include "../Components/Checkbox.h"
 
 using namespace Core;
 
@@ -18,6 +20,12 @@ Sidebar::~Sidebar()
 	if (m_title != nullptr)
 		delete m_title;
 
+	if (m_type_dropdown != nullptr)
+		delete m_type_dropdown;
+
+	if (m_func_dropdown != nullptr)
+		delete m_func_dropdown;
+
 	clearParams();
 }
 // VIRTUAL FUNCS
@@ -30,6 +38,10 @@ void Sidebar::getParameter(unsigned int in_key, double& out_value)
 void Sidebar::updateParameter(unsigned int in_key, double out_value)
 {
 	m_parameters[in_key] = out_value;
+}
+void Sidebar::registerCallback(Canvas* in_canvas)
+{
+	m_ref_canvas = in_canvas;
 }
 void Sidebar::init()
 {
@@ -44,9 +56,20 @@ void Sidebar::init()
 
 	m_duration_slider->setDesc("Duration");
 
+	m_timescale = new Slider();
+	m_timescale->setX((float)getSafeX());
+	m_timescale->setY((float)getSafeY() + 90.f);
+	m_timescale->setWidth(getWidth() - 2.f * m_margin);
+	m_timescale->setHeight(12.f);
+	m_timescale->setColor(LIME);
+	m_timescale->setMultiplier(10.f);
+	m_timescale->init(0.1f);
+
+	m_timescale->setDesc("Timescale");
+
 	m_type_dropdown = new Dropdown();
 	m_type_dropdown->setX((float)getSafeX());
-	m_type_dropdown->setY((float)getSafeY() + 90.f);
+	m_type_dropdown->setY((float)getSafeY() + 130.f);
 	m_type_dropdown->setWidth((getWidth() * 0.5f) - 2.f * m_margin);
 	m_type_dropdown->setHeight(22.f);
 	m_type_dropdown->setColor(SKYBLUE);
@@ -68,7 +91,7 @@ void Sidebar::init()
 
 	m_func_dropdown = new Dropdown();
 	m_func_dropdown->setX((float)getSafeX() + (getWidth() * 0.5f));
-	m_func_dropdown->setY((float)getSafeY() + 90.f);
+	m_func_dropdown->setY((float)getSafeY() + 130.f);
 	m_func_dropdown->setWidth((getWidth() * 0.5f) - 2.f * m_margin);
 	m_func_dropdown->setHeight(22.f);
 	m_func_dropdown->setColor(SKYBLUE);
@@ -87,6 +110,17 @@ void Sidebar::init()
 	m_title->setColor(DARKGRAY);
 	m_title->setFontSize(20);
 	m_title->setWidth(getWidth() - 2.f * m_margin);
+
+	m_is_draw_grid = new Checkbox();
+	m_is_draw_grid->setX((float)getSafeX());
+	m_is_draw_grid->setY((float)getSafeY() + 170.f);
+	m_is_draw_grid->setWidth(22.f);
+	m_is_draw_grid->setHeight(22.f);
+	m_is_draw_grid->setColor(WHITE);
+	m_is_draw_grid->init();
+
+	m_is_draw_grid->setDesc("Draw grid");
+	m_is_draw_grid->setChecked(true);
 }
 void Sidebar::draw()
 {
@@ -102,6 +136,12 @@ void Sidebar::draw()
 		updateParameter(CONSTS::PARAMETER_DURATION, double(m_duration_slider->getValue() * m_duration_slider->getMultiplier()));
 	}
 
+	if (m_timescale != nullptr)
+	{
+		m_timescale->draw();
+		updateParameter(CONSTS::PARAMETER_TIMESCALE, double(m_timescale->getValue() * m_timescale->getMultiplier()));
+	}
+
 	if (m_type_dropdown != nullptr)
 	{
 		m_type_dropdown->draw();
@@ -112,6 +152,15 @@ void Sidebar::draw()
 	{
 		m_func_dropdown->draw();
 		updateParameter(CONSTS::PARAMETER_TWEEN_FUNC, Easing::EASING_FUNC(m_func_dropdown->getOption()));
+	}
+
+	if (m_is_draw_grid != nullptr)
+	{
+		bool v = m_is_draw_grid->getChecked();
+		m_is_draw_grid->draw();
+		updateParameter(CONSTS::PARAMETER_SHOW_GRID, double(m_is_draw_grid->getChecked()));
+		if (m_is_draw_grid->getChecked() != v && m_ref_canvas != nullptr)
+			m_ref_canvas->refreshParameters();
 	}
 }
 Vector2 Sidebar::getSafePos()
@@ -131,5 +180,6 @@ void Sidebar::clearParams()
 {
 	m_margin = 20.f;
 	m_duration_slider = nullptr;
+	m_ref_canvas = nullptr;
 }
 

@@ -51,8 +51,10 @@ namespace Core
 		virtual void draw();
 		virtual void setBorderSize(float in_value);
 		virtual void setRadius(float in_value);
+		virtual void setTexture(Texture2D* in_texture);
 
 	protected:
+		Texture2D* m_texture;
 		float m_border_size;
 		float m_radius;
 
